@@ -2,6 +2,6 @@
 
 Set operations using Java
 
-Cesar Placido 
-Antonio Campos
+* Cesar Placido 
+* Antonio Campos
 
