@@ -51,11 +51,11 @@ public class Window extends JFrame {
         JLabel labelResultContent = new JLabel();
 
         labelSetOne.setBounds(20, 5, 100, 100);
-        labelSetOneContent.setBounds(140, 3, 100, 100);
+        labelSetOneContent.setBounds(140, 3, 300, 100);
         labelSetTwo.setBounds(20, 35, 100, 100);
-        labelSetTwoContent.setBounds(140, 35, 100, 100);
+        labelSetTwoContent.setBounds(140, 35, 300, 100);
         labelResult.setBounds(20, 65, 100, 100);
-        labelResultContent.setBounds(140, 65, 100, 100);
+        labelResultContent.setBounds(140, 65, 600, 100);
 
         JLabel labelData = new JLabel("Dato:");
         JLabel labelOperation = new JLabel("Operacion:");
@@ -106,18 +106,25 @@ public class Window extends JFrame {
         controlsPane.add(buttonAccept);
 
         buttonAdd.addActionListener(e -> {
+            //Validation to prevent empty set
             if (dataField.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Error: No hay nada que agregar", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             else {
-
-                if (setOneRadio.isSelected()) {
-                    contentListOne.add(dataField.getText());
-                    labelSetOneContent.setText(Arrays.toString(contentListOne.toArray()));
-                } else {
-                    contentListTwo.add(dataField.getText());
-                    labelSetTwoContent.setText(Arrays.toString(contentListTwo.toArray()));
+                try{
+                    //Parses the value to verify that there are no letters whatsoever, if so, it continues with the program
+                    int elements = Integer.parseInt(dataField.getText());
+                    if (setOneRadio.isSelected()) {
+                        contentListOne.add(dataField.getText());
+                        labelSetOneContent.setText(Arrays.toString(contentListOne.toArray()));
+                    } else {
+                        contentListTwo.add(dataField.getText());
+                        labelSetTwoContent.setText(Arrays.toString(contentListTwo.toArray()));
+                    }
+                }
+                catch (Exception a){
+                    JOptionPane.showMessageDialog(null,"Solo se admiten numeros!","Error!",JOptionPane.ERROR_MESSAGE);
                 }
             }
 
@@ -131,6 +138,10 @@ public class Window extends JFrame {
                 labelResultContent.setText(Arrays.toString(intersectionList(contentListOne, contentListTwo).toArray()));
             } else if (differenceRadio.isSelected()) {
                 labelResultContent.setText(Arrays.toString(differenceList(contentListOne, contentListTwo).toArray()));
+            }
+            //Verifies that one or both sets have at leats one element
+            if(labelSetOneContent.getText().isEmpty()  || labelSetTwoContent.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Los conjuntos no son correnctos", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
