@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
 
 import java.awt.Dimension;
 import java.awt.Container;
@@ -15,6 +16,7 @@ import java.awt.BorderLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 public class Window extends JFrame {
 
@@ -104,34 +106,65 @@ public class Window extends JFrame {
         controlsPane.add(buttonAccept);
 
         buttonAdd.addActionListener(e -> {
-            if (setOneRadio.isSelected()) {
-                contentListOne.add(dataField.getText());
-                final Object[] auxArray = contentListOne.toArray();
-                StringBuilder builder = new StringBuilder();
-
-                for(Object element : auxArray)
-                    builder.append(element).append(",");
-
-                final String finalValue = "{ " + builder.toString() + " }";
-
-                labelSetOneContent.setText(finalValue);
+            if (dataField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Error: No hay nada que agregar", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
             else {
-                contentListTwo.add(dataField.getText());
-                final Object[] auxArray = contentListTwo.toArray();
-                StringBuilder builder = new StringBuilder();
 
-                for(Object element : auxArray)
-                    builder.append(element).append(",");
-
-                final String finalValue = "{ " + builder.toString() + " }";
-
-                labelSetTwoContent.setText(finalValue);
+                if (setOneRadio.isSelected()) {
+                    contentListOne.add(dataField.getText());
+                    labelSetOneContent.setText(Arrays.toString(contentListOne.toArray()));
+                } else {
+                    contentListTwo.add(dataField.getText());
+                    labelSetTwoContent.setText(Arrays.toString(contentListTwo.toArray()));
+                }
             }
 
             dataField.setText(null);
         });
 
+        buttonAccept.addActionListener(e -> {
+            if (unionRadio.isSelected()) {
+                labelResultContent.setText(Arrays.toString(unionList(contentListOne, contentListTwo).toArray()));
+            } else if (intersectionRadio.isSelected()) {
+                labelResultContent.setText(Arrays.toString(intersectionList(contentListOne, contentListTwo).toArray()));
+            } else if (differenceRadio.isSelected()) {
+                labelResultContent.setText(Arrays.toString(differenceList(contentListOne, contentListTwo).toArray()));
+            }
+        });
+
         container.add(controlsPane, BorderLayout.CENTER);
+    }
+
+    private List<String> unionList(List<String> first, List<String> second) {
+        List<String> result = new ArrayList<>(first.size() + second.size());
+        addNoDups(result, first);
+        addNoDups(result, second);
+
+        return  result;
+    }
+
+    private List<String> intersectionList(List<String> first, List<String> second) {
+        List<String> result = new ArrayList<>(first.size() > second.size() ? first.size() : second.size());
+        result.addAll(first);
+        result.retainAll(second);
+
+        return result;
+    }
+
+    private List<String> differenceList(List<String> first, List<String> second) {
+        List<String> result = new ArrayList<>(first);
+        result.removeAll(second);
+
+        return result;
+    }
+
+    private void addNoDups(List<String> toAddTo, List<String> iterateOver) {
+        for(String s : iterateOver){
+            if(toAddTo.indexOf(s) == -1) {
+                toAddTo.add(s);
+            }
+        }
     }
 }
