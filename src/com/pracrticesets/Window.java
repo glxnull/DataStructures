@@ -14,20 +14,20 @@ import java.awt.Dimension;
 import java.awt.Container;
 import java.awt.BorderLayout;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Arrays;
 
 public class Window extends JFrame {
 
-    private List<String> contentListOne;
-    private List<String> contentListTwo;
+    private Set<String> contentListOne;
+    private Set<String> contentListTwo;
 
     public Window() {
         super("Conjuntos");
         initComponents(this);
-        this.contentListOne = new ArrayList<>();
-        this.contentListTwo = new ArrayList<>();
+        this.contentListOne = new HashSet<>();
+        this.contentListTwo = new HashSet<>();
     }
 
     private void initComponents(JFrame frame) {
@@ -113,8 +113,6 @@ public class Window extends JFrame {
             }
             else {
                 try{
-                    //Parses the value to verify that there are no letters whatsoever, if so, it continues with the program
-                    int elements = Integer.parseInt(dataField.getText());
                     if (setOneRadio.isSelected()) {
                         contentListOne.add(dataField.getText());
                         labelSetOneContent.setText(Arrays.toString(contentListOne.toArray()));
@@ -148,34 +146,26 @@ public class Window extends JFrame {
         container.add(controlsPane, BorderLayout.CENTER);
     }
 
-    private List<String> unionList(List<String> first, List<String> second) {
-        List<String> result = new ArrayList<>(first.size() + second.size());
-        addNoDups(result, first);
-        addNoDups(result, second);
+    private Set<String> unionList(Set<String> first, Set<String> second) {
+        Set<String> result = new HashSet<>(first.size() + second.size());
+        result.addAll(first);
+        result.addAll(second);
 
-        return  result;
+        return result;
     }
 
-    private List<String> intersectionList(List<String> first, List<String> second) {
-        List<String> result = new ArrayList<>(first.size() > second.size() ? first.size() : second.size());
+    private Set<String> intersectionList(Set<String> first, Set<String> second) {
+        Set<String> result = new HashSet<>(first.size() > second.size() ? first.size() : second.size());
         result.addAll(first);
         result.retainAll(second);
 
         return result;
     }
 
-    private List<String> differenceList(List<String> first, List<String> second) {
-        List<String> result = new ArrayList<>(first);
+    private Set<String> differenceList(Set<String> first, Set<String> second) {
+        Set<String> result = new HashSet<>(first);
         result.removeAll(second);
 
         return result;
-    }
-
-    private void addNoDups(List<String> toAddTo, List<String> iterateOver) {
-        for(String s : iterateOver){
-            if(toAddTo.indexOf(s) == -1) {
-                toAddTo.add(s);
-            }
-        }
     }
 }
